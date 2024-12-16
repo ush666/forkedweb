@@ -6,17 +6,26 @@
     require_once('../include/head.php');
 ?>
 <body>
-    <?php
-        require_once('../include/header.admin.php')
-    ?>
+    <?php require_once('../include/header.admin.php') ?>
+
     <main>
         <div class="container-fluid">
             <div class="row">
-                <?php
-                    require_once('../include/sidepanel.php')
-                ?>
+                <?php require_once('../include/sidepanel.php') ?>
+                
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <h2 class="h3 brand-color pt-3 pb-2">Products</h2>
+
+                    <div class="mb-4">
+                        <h5>Upload Product Image</h5>
+                        <form id="uploadForm" action="upload.php" method="POST" enctype="multipart/form-data">
+                            <label for="image">Choose an Image</label>
+                            <input type="file" name="image" id="image" accept="image/*" required>
+                            <div id="error-message" style="color: red;"></div>
+                            <button type="submit" class="btn btn-primary mt-2">Upload</button>
+                        </form>
+                    </div>
+
                     <div class="table-responsive overflow-hidden">
                         <div class="row g-2 mb-2 m-0">
                             <div id="MyButtons" class="d-flex mb-md-2 mb-lg-0 col-12 col-md-auto"></div>
@@ -42,6 +51,8 @@
                                 <button class="btn btn-outline-secondary btn-add" type="button"><i class="fa fa-plus brand-color" aria-hidden="true"></i></button>
                             </div>
                         </div>
+
+                        <!-- Products Table -->
                         <table id="products" class="table table-striped table-sm">
                             <thead>
                                 <tr>
@@ -54,8 +65,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            <?php
-                                $pizzaArray = array(
+                                <?php
+                                    $pizzaArray = array(    
                                     array(
                                         'name' => 'Margherita Pizza',
                                         'category' => 'Pizza',
@@ -124,36 +135,50 @@
                                         'category' => 'Refreshment',
                                         'price' => '20.00',
                                         'availability' => 'In Stock'
-                                    ),                                    
-                                );
-                            ?>
-                            <?php
-                                $counter = 1;
-                                foreach ($pizzaArray as $item){
-                            ?>
-                                <tr>
-                                    <td><?= $counter ?></td>
-                                    <td><?= $item['name'] ?></td>
-                                    <td><?= $item['category'] ?></td>
-                                    <td><?= '₱' . number_format($item['price'], 2) ?></td>
-                                    <td><?= $item['availability'] ?></td>
-                                    <td class="text-center"><a href=""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
-                                </tr>
-                            <?php
-                                    $counter++;
-                                }
-                            ?>  
+                                    ),
+                                    );
+
+                                    $counter = 1;
+                                    foreach ($pizzaArray as $item) {
+                                ?>
+                                    <tr>
+                                        <td><?= $counter ?></td>
+                                        <td><?= $item['name'] ?></td>
+                                        <td><?= $item['category'] ?></td>
+                                        <td><?= '₱' . number_format($item['price'], 2) ?></td>
+                                        <td><?= $item['availability'] ?></td>
+                                        <td class="text-center"><a href=""><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a></td>
+                                    </tr>
+                                <?php
+                                        $counter++;
+                                    }
+                                ?>
                             </tbody>
                         </table>
-
                     </div>
                 </main>
             </div>
         </div>
     </main>
-    <?php
-        require_once('../include/js.php')
-    ?>
+
+    <?php require_once('../include/js.php') ?>
     <script src="../js/products.js"></script>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            const fileInput = document.getElementById('image');
+            const file = fileInput.files[0];
+            const errorMessage = document.getElementById('error-message');
+            
+            const maxSize = 5 * 1024 * 1024;
+
+            if (file && file.size > maxSize) {
+                event.preventDefault();  
+                errorMessage.textContent = "The image file size is too large. Max allowed size is 5MB.";
+            } else {
+                errorMessage.textContent = "";  
+            }
+        });
+    </script>
 </body>
 </html>
